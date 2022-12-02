@@ -1,4 +1,4 @@
-import { choicesCollection } from "../database/db.js"
+import { choicesCollection, votesCollection } from "../database/db.js"
 import { choiceSchema } from "../models/choices.model.js"
 
 export async function createChoice(req, res) {
@@ -21,18 +21,19 @@ export async function createChoice(req, res) {
     }
 }
 
-export async function getChoices(req, res) {
-    const { pollId } = req.params
+export async function postVote(req, res) {
+    const id = req.params.id
+
+    const vote = { 
+        createdAt: "2022-02-13 01:00", //usar dayjs
+        choiceId: ObjectId(id), 
+    }
 
     try {
-        const options = await choicesCollection.find().sort({ pollId }).toArray();
-        res.send(options)
-    } catch (err){
+        await votesCollection.insertOne(vote);
+        res.status(201).send("Voto feito!");
+    } catch (err) {
         console.log(err);
         res.sendStatus(500);
     }
-
-}
-
-export async function voteChoice(req, res) {
 }
