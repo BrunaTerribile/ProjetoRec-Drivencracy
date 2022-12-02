@@ -10,6 +10,6 @@ try {
     console.log(err);
   }
   
-const db = mongoClient.db("Drivencracy");
+const db = mongoClient.db("drivencracy");
 export const pollsCollection = db.collection("polls");
 export const choicesCollection = db.collection("choices");

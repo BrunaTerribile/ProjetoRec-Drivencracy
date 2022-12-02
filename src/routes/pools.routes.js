@@ -4,7 +4,7 @@ import {
     getPools,
     getOptions,
     getResult
- } from "../controllers/pools.controller"
+ } from "../controllers/pools.controller.js"
 
 const router = Router();
 

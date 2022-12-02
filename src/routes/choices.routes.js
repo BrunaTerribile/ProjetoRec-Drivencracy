@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createChoice, voteChoice } from "../controllers/choices.controller"
+import { createChoice, voteChoice } from "../controllers/choices.controller.js"
 
 const router = Router();
 
