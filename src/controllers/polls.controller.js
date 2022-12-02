@@ -32,8 +32,5 @@ export async function getPolls(req, res) {
     }
 }
 
-export async function getOptions(req, res) {
-}
-
 export async function getResult(req, res) {
 }
