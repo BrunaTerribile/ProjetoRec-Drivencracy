@@ -1,12 +1,12 @@
 import express  from "express";
 import cors from "cors";
-import poolsRoutes from "./routes/pools.routes.js";
+import pollsRoutes from "./routes/polls.routes.js";
 import choicesRoutes from "./routes/choices.routes.js"
 
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use(poolsRoutes);
+app.use(pollsRoutes);
 app.use(choicesRoutes)
 
 const port = process.env.PORT || 5000;
