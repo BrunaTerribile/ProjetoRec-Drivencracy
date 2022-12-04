@@ -23,15 +23,17 @@ export async function createChoice(req, res) {
 
 export async function postVote(req, res) {
     const id = req.params.id
+    var date = new Date()
 
     const vote = { 
-        createdAt: "2022-02-13 01:00", //usar dayjs
-        choiceId: ObjectId(id), 
+        createdAt: date.toString(),
+        choiceId: id, 
     }
 
     try {
         await votesCollection.insertOne(vote);
-        res.status(201).send("Voto feito!");
+        res.send(vote)
+        //res.status(201).send("Voto feito!");
     } catch (err) {
         console.log(err);
         res.sendStatus(500);

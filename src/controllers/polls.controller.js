@@ -52,4 +52,30 @@ export async function getChoices(req, res) {
 }
 
 export async function getResult(req, res) {
+    const pollId = req.params.id
+
+    try {
+        const pollData = await pollsCollection.find({ pollId }).toArray();
+
+        if(pollData == []){
+            res.sendStatus(404);
+            return;
+        }
+
+        const votes = await choicesCollection.find({ pollId }).toArray();
+
+        const pollResult = {
+            pollData,
+            result: {
+                title: xxxx,
+                votes: 10
+            }
+        }
+
+
+        res.send(pollResult)
+    } catch (err){
+        console.log(err);
+        res.sendStatus(500);
+    }
 }
