@@ -3,6 +3,11 @@ import { pollsSchema } from "../models/polls.model.js";
 
 export async function createPoll(req, res) {
     const poll = req.body;
+    const today = new Date()
+
+    if(poll.expireAt === ""){
+        expireAt = today
+    }
 
     try {
         const { error } = pollsSchema.validate(poll, { abortEarly: false });
@@ -34,14 +39,12 @@ export async function getPolls(req, res) {
 
 export async function getChoices(req, res) {
     const pollId = req.params.id
-    console.log(pollId)
 
     try {
         const options = await choicesCollection.find({ pollId }).toArray();
 
-        if(options == []){
-            res.sendStatus(404);
-            return;
+        if(!options ){
+            return res.sendStatus(404);
         }
 
         res.send(options)
@@ -57,7 +60,7 @@ export async function getResult(req, res) {
     try {
         const pollData = await pollsCollection.find({ pollId }).toArray();
 
-        if(pollData == []){
+        if(pollData === []){
             res.sendStatus(404);
             return;
         }
