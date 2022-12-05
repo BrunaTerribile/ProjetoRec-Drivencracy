@@ -11,7 +11,7 @@ export async function createChoice(req, res) {
     }
 
     try {
-        const pollExist = await pollsCollection.findOne({ _id: pollId }) //verifica se a enquete existe
+        const pollExist = await pollsCollection.find({ _id: pollId }) //verifica se a enquete existe
 
         if(!pollExist) { 
             return res.status(404).send("Essa enquete não existe");

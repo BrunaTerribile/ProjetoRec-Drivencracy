@@ -1,4 +1,4 @@
-import { pollsCollection, choicesCollection } from "../database/db.js"
+import { pollsCollection, choicesCollection, votesCollection } from "../database/db.js"
 import { pollsSchema } from "../models/polls.model.js";
 
 export async function createPoll(req, res) {
@@ -58,25 +58,25 @@ export async function getResult(req, res) {
     const pollId = req.params.id
 
     try {
-        const pollData = await pollsCollection.find({ pollId }).toArray();
+        const pollData = await pollsCollection.find({ pollId }).toArray(); //pega as infos da enquete
 
-        if(pollData === []){
+        if(pollData === []){ //caso a enquete não exista
             res.sendStatus(404);
             return;
         }
 
-        const votes = await choicesCollection.find({ pollId }).toArray();
+        const choicesIdsArr = await choicesCollection.find({pollId}, {projection: {_id: 1}}).toArray();
+
+        const votes = await votesCollection.find().toArray();
 
         const pollResult = {
             pollData,
             result: {
-                title: xxxx,
                 votes: 10
             }
         }
 
-
-        res.send(pollResult)
+        res.send(votes)
     } catch (err){
         console.log(err);
         res.sendStatus(500);
