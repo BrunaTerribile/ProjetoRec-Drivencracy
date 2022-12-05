@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { pollsCollection, choicesCollection, votesCollection } from "../database/db.js"
 import { pollsSchema } from "../models/polls.model.js";
 
@@ -58,25 +59,33 @@ export async function getResult(req, res) {
     const pollId = req.params.id
 
     try {
-        const pollData = await pollsCollection.find({ pollId }).toArray(); //pega as infos da enquete
+        const pollData = await pollsCollection.findOne({ _id: ObjectId(pollId) })//pega as infos da enquete
 
-        if(pollData === []){ //caso a enquete não exista
-            res.sendStatus(404);
-            return;
+        if(!pollData || pollData == []){ //caso a enquete não exista
+            return res.sendStatus(404);
         }
 
-        const choicesIdsArr = await choicesCollection.find({pollId}, {projection: {_id: 1}}).toArray();
+        const options = await choicesCollection.find({pollId}).toArray(); //pega as opções da enquete escolhida
+        const choicesIdsArr = options.map(c => String(c._id)) //exibe apenas os ids das opções
+        console.log(choicesIdsArr)
 
-        const votes = await votesCollection.find().toArray();
+        const choicesRanking = await  votesCollection.aggregate([
+            { $match: {choiceId: {$in: choicesIdsArr}} },
+            { $group: {_id: "$choiceId", votes: {$sum: 1}} },
+            { $sort: {votes: -1}}
+        ]).toArray()
 
-        const pollResult = {
-            pollData,
-            result: {
-                votes: 10
-            }
-        }
+        const mostVoted = choicesRanking[0]
+        const choiceData = await choicesCollection.findOne({_id: ObjectId(mostVoted._id) });
 
-        res.send(votes)
+        const resultData = {result: {
+            title: choiceData.title,
+            votes: mostVoted.votes
+        }}
+
+        var result = Object.assign({}, pollData, resultData);
+        
+        res.send(result)
     } catch (err){
         console.log(err);
         res.sendStatus(500);
