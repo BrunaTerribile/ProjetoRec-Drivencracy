@@ -50,11 +50,19 @@ export async function createChoice(req, res) {
 export async function postVote(req, res) {
     const choiceId = req.params.id
     var date = new Date()
+    const today = dayjs().locale("pt-br").format("YYYY-MM-DD")
 
     const choiceExist = await choicesCollection.findOne({ _id: ObjectId(choiceId) })
 
     if(!choiceExist || choiceExist == []){ //caso a opção não exista
         return res.sendStatus(404);
+    }
+
+    const pollExist = await pollsCollection.findOne({ _id: ObjectId(choiceExist.pollId) })//verifica se a enquete existe
+    const pollDate = (pollExist.expireAt).split('/'); //pega somente a data de expiração da enquete
+
+    if(pollDate < today){ //verifica se a enquete expirou
+        return res.status(403).send("Essa enquete já expirou");
     }
 
     const vote = { 
