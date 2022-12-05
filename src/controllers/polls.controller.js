@@ -1,13 +1,14 @@
 import { ObjectId } from "mongodb";
 import { pollsCollection, choicesCollection, votesCollection } from "../database/db.js"
 import { pollsSchema } from "../models/polls.model.js";
+import dayjs from "dayjs";
 
 export async function createPoll(req, res) {
     const poll = req.body;
-    const today = new Date()
+    const monthLater = dayjs().add(1, 'month').locale("pt-br").format("YYYY-MM-DD HH:mm")
 
     if(poll.expireAt === ""){
-        expireAt = today
+        poll.expireAt = monthLater
     }
 
     try {
