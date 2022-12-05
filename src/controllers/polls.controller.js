@@ -20,7 +20,6 @@ export async function createPoll(req, res) {
         }
     
         await pollsCollection.insertOne(poll);
-    
         res.status(201).send("Enquete criada com sucesso!");
     } catch (err) {
         console.log(err);
@@ -29,7 +28,6 @@ export async function createPoll(req, res) {
 }
 
 export async function getPolls(req, res) {
-
     try {
         const allPolls = await pollsCollection.find({}).toArray();
         res.send(allPolls)
